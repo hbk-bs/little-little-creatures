@@ -12,7 +12,9 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   particles.push(new Particle(createVector(random(width), random(height))));
   particles.push(new MegaParticle(createVector(random(width), random(height))));
+  particles.push(new arne(createVector(random(width), random(height))));
 }
+
 
 function draw() {
   background(255);
