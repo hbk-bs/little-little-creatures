@@ -130,5 +130,9 @@ dist
 .pnp.*
 
 node_modules/*
-
-!node_modules/@types/p5/global.d.ts
+!node_modules/
+!node_modules/@types/
+!node_modules/@types/p5/
+node_modules/@types/p5/LICENSE
+node_modules/@types/p5/package.json
+node_modules/@types/p5/README.md
