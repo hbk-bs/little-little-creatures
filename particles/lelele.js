@@ -51,7 +51,7 @@ class leleleParticle extends Particle {
       }
   
       // Verbindungslinie zwischen den Ellipsen bleibt schwarz
-      stroke(0);
+      noStroke();
       line(this.pos.x, this.pos.y, x2, y2);
   
       // Wenn die Übergangszeit abgelaufen ist, aktualisiere die Farben und starte den Übergang erneut
