@@ -10,8 +10,9 @@
 let particles = [];
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  particles.push(new Particle(createVector(random(width), random(height))));
-  particles.push(new MegaParticle(createVector(random(width), random(height))));
+  //particles.push(new Particle(createVector(random(width), random(height))));
+  //particles.push(new MegaParticle(createVector(random(width), random(height))));
+  particles.push(new leleleParticle(createVector(random(width), random(height), color(3))));
 }
 
 function draw() {
