@@ -10,17 +10,26 @@
 let particles = [];
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  particles.push(new Particle(createVector(random(width), random(height))));
-  particles.push(new MegaParticle(createVector(random(width), random(height))));
+
 }
 
 function draw() {
-  background(255);
+  background(255,10);
   particles.forEach((particle) => {
     particle.display();
+    //particle.move();
+    particle.move();
   });
+
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+}
+
+
+function mousePressed() {
+  particles.push(
+    new MireaParticle(createVector(random(width), random(height))));
+  
 }
