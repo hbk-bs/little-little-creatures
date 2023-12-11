@@ -9,13 +9,12 @@
 //@ts-check
 let particles = [];
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  particles.push(new Particle(createVector(random(width), random(height))));
-  particles.push(new MegaParticle(createVector(random(width), random(height))));
+  createCanvas(400, 400);
+  particles.push(new KatjaParticle(createVector(random(width), random(height),color(3))));
 }
 
 function draw() {
-  background(255);
+  background(0);  
   particles.forEach((particle) => {
     particle.display();
   });
