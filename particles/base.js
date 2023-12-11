@@ -1,4 +1,4 @@
-class Particle {
+class  Particle {
   pos;
   constructor(pos) {
     this.pos = pos;
