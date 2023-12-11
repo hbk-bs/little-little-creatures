@@ -11,7 +11,7 @@ let particles = [];
 function setup() {
   createCanvas(windowWidth, windowHeight);
   particles.push(new Particle(createVector(random(width), random(height))));
-  particles.push(new PhillysParticle(50,50,50));
+  particles.push(new PhillysParticle(10,10,10));
 }
 
 function draw() {
@@ -27,9 +27,6 @@ function draw() {
   });
 }
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-}
 
 let value = 0;
 function draw() {
