@@ -7,19 +7,19 @@ class annes_particle extends Particle {
 }
 randomColor= color(
     random(100),
-    random(100), 
+    random(200), 
     random(200));
 randomColor2=color(
-    random(100),
+    random(200),
     random(200), 
     random(100));
 randomColor3=color(
     random(200),
     random(100), 
-    random(100));
+    random(200));
 randomColor4=color(
     random(100),
-    random(100), 
+    random(200), 
     random(100));
 
     display() {
@@ -36,4 +36,5 @@ randomColor4=color(
     rect(0,0,15,15);
     pop();
   }
+  
 }
