@@ -7,18 +7,35 @@
 // They will help you while writing code.
 
 //@ts-check
-let particles = [];
+const particles = [];
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  particles.push(new Particle(createVector(random(width), random(height))));
-  particles.push(new MegaParticle(createVector(random(width), random(height))));
 }
 
+
+
 function draw() {
-  background(255);
-  particles.forEach((particle) => {
-    particle.display();
-  });
+ 
+  background(255, 10);
+	for (let i = 0; i < particles.length; i++) {
+		// update particle
+		particles[i].move();
+		// display particle
+		particles[i].display();
+		particles[i].update();
+	}
+}
+
+function mousePressed() {
+	const x = random(width);
+	const y = random(height);
+	const randomColor = color(random(255), random(100), 255)
+	particles.push(new hannahsoophie(x, y, randomColor));
+
+}
+
+function mouseDragged() {
+
 }
 
 function windowResized() {
