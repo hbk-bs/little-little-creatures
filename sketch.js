@@ -11,16 +11,37 @@ let particles = [];
 function setup() {
   createCanvas(windowWidth, windowHeight);
   particles.push(new Particle(createVector(random(width), random(height))));
-  particles.push(new PhillysParticle(10,10,10));
+  particles.push(new PhillysParticle(50,50,50));
 }
 
 function draw() {
   background(255);
   particles.forEach((particle) => {
     particle.display();
+  background(0);
+  for (let i = 0; i < particle.lenght; i++){
+    particles[i].update();
+    particles[i].show();
+  }
+
   });
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
+
+let value = 0;
+function draw() {
+  fill(random(255));
+  ellipse(winMouseX,winMouseY,50,50);
+  blendMode(ADD);
+  }
+function mouseDragged() {
+  value = value + 5;
+  if (value > 255) {
+    value = 20;
+  }
+}
+
+
