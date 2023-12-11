@@ -5,7 +5,7 @@
 /// <reference path="./lib/index.d.ts" />
 // Keep these comments alive.
 // They will help you while writing code.
-
+//
 //@ts-check
 let particles = [];
 function setup() {
