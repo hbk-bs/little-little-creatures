@@ -2,6 +2,7 @@ class Particle {
   /**
    * @type {import("p5").Vector}
    */
+
   pos;
 
   /**
