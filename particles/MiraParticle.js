@@ -7,7 +7,7 @@ class MiraParticle extends Particle {
   constructor(pos, col, size, sizeLimit) {
     super(pos);
 
-    this.col = col;
+    this.col = col ? color(col) : random(255);
     this.size = size;
     this.sizeLimit = sizeLimit;
     this.lifetime = 100;
