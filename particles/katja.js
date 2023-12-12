@@ -1,8 +1,10 @@
 //@ts-check
 
 class KatjaParticle extends Particle {
-  constructor(pos) {
+  col;
+  constructor(pos, col) {
     super(pos);
+    this.col = col;
   }
 
   display() {
