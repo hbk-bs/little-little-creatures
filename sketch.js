@@ -6,8 +6,6 @@
 // Keep these comments alive.
 // They will help you while writing code.
 
-
-
 //@ts-ignore
 let particles = [];
 
@@ -21,6 +19,7 @@ const particleTypes = [
   PhillysParticle,
   leleleParticle,
   MiraParticle,
+  hannahsoophie,
 ];
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -66,27 +65,21 @@ function setup() {
       45
     )
   );
-  	particles.push(new hannahsoophie(x, y, color(random(255), random(100), 255)));
-
+  particles.push(
+    new hannahsoophie(createVector(random(width), random(height)))
+  );
 }
-
-
 
 function draw() {
- 
-  background(255, 10);
-	for (let i = 0; i < particles.length; i++) {
-		// update particle
-		//particles[i].move();
-		// display particle
-		particles[i].display();
-		//particles[i].update();
-	}
+  background(255);
+  for (let i = 0; i < particles.length; i++) {
+    // update particle
+    //particles[i].move();
+    // display particle
+    particles[i].display();
+    //particles[i].update();
+  }
 }
-
-
-
-
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
