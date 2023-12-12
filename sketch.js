@@ -20,6 +20,7 @@ const particleTypes = [
   leleleParticle,
   MiraParticle,
   hannahsoophie,
+  bleonaParticle,
 ];
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -29,6 +30,10 @@ function setup() {
 
   particles.push(new Particle(createVector(random(width), random(height))));
   particles.push(new MegaParticle(createVector(random(width), random(height))));
+
+  particles.push(
+    new bleonaParticle(createVector(random(width), random(height)))
+  );
 
   particles.push(new DonoParticle(createVector(random(width), random(height))));
 
@@ -71,7 +76,7 @@ function setup() {
 }
 
 function draw() {
-  background(255);
+  background(255, 10);
   for (let i = 0; i < particles.length; i++) {
     // update particle
     //particles[i].move();
