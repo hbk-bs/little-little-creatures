@@ -37,6 +37,9 @@ function setup() {
   );
   particles.push(new Particle(createVector(random(width), random(height))));
 
+  particles.push(new mel(createVector(random(width), random(height))));
+
+
   particles.push(
     new PhillysParticle(createVector(random(width), random(height)))
   );
@@ -53,6 +56,7 @@ function setup() {
       45
     )
   );
+
 
 }
 
