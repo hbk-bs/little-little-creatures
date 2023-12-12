@@ -8,7 +8,9 @@
 //@ts-ignore
 let particles = [];
 function setup() {
+
   createCanvas(windowWidth, windowHeight);
+  particles.push(new KatjaParticle(createVector(random(width), random(height),color(3))));
 
   particles.push(new Particle(createVector(random(width), random(height))));
   particles.push(new MegaParticle(createVector(random(width), random(height))));
@@ -63,4 +65,3 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
-let value = 0;
