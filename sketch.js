@@ -20,28 +20,29 @@ function setup() {
       10,
       random(255),
       random(255),
-      random(255),
-    ),
+      random(255)
+    )
   );
-      new MireaParticle(createVector(random(width), random(height))));
+  particles.push(
+    new MireaParticle(createVector(random(width), random(height)))
+  );
 
   particles.push(
-    new annes_particle(createVector(random(width), random(height))),
+    new annes_particle(createVector(random(width), random(height)))
   );
   particles.push(new Particle(createVector(random(width), random(height))));
   particles.push(new MegaParticle(createVector(random(width), random(height))));
   particles.push(
-    new leleleParticle(createVector(random(width), random(height))),
+    new leleleParticle(createVector(random(width), random(height)))
   );
   particles.push(
     new MiraParticle(
       createVector(random(100, 200), random(100, 300)),
       random(255),
       30,
-      45,
-    ),
+      45
+    )
   );
-}
 }
 
 function draw() {
@@ -49,13 +50,10 @@ function draw() {
   frameRate(10);
   // @ts-ignore
   particles.forEach((particle) => {
-    particle.display();  
+    particle.display();
   });
-
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
-
-

@@ -27,10 +27,11 @@ class MireaParticle extends Particle {
       //rect(this.endPositions[i].x, this.endPositions[i].y, 20,20)
       circle(this.endPositions[i].x, this.endPositions[i].y, 20);
       fill(this.colII);
-      circle(this.endPositions[i].x, this.endPositions[i].y, 8)
+      circle(this.endPositions[i].x, this.endPositions[i].y, 8);
     }
-  
+
     pop();
+    this.move();
   }
 
   move() {
@@ -40,8 +41,7 @@ class MireaParticle extends Particle {
     this.pos.y = constrain(this.pos.y, 0, windowHeight);
   }
 
-
-  calcEndPositions() { 
+  calcEndPositions() {
     const temporaryEndPositions = [];
     for (let i = 0; i < this.numberOfLines; i++) {
       temporaryEndPositions.push(
