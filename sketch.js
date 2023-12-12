@@ -18,8 +18,20 @@ function setup() {
 
   particles.push(new Particle(createVector(random(width), random(height))));
   particles.push(new MegaParticle(createVector(random(width), random(height))));
-  particles.push(new isabella(createVector(random(width), random(height))));
-  particles.push(new annes_particle(createVector(random(width), random(height))));
+  particles.push(
+    new isabella(
+      createVector(random(width), random(height)),
+      5,
+      10,
+      10,
+      random(255),
+      random(255),
+      random(255),
+    ),
+  );
+  particles.push(
+    new annes_particle(createVector(random(width), random(height))),
+  );
   //particles.push(new Particle(createVector(random(width), random(height))));
   //particles.push(new MegaParticle(createVector(random(width), random(height))));
   particles.push(
