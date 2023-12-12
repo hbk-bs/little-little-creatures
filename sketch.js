@@ -5,7 +5,7 @@
 /// <reference path="./node_modules/@types/p5/index.d.ts" />
 // Keep these comments alive.
 // They will help you while writing code.
-
+//@ts-ignore
 let particles = [];
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -31,22 +31,23 @@ function setup() {
   particles.push(
     new leleleParticle(createVector(random(width), random(height))),
   );
-  particles.push(new MiraParticle(random (100,200), random (100,300) ,random (255),30,45));
+  particles.push(
+    new MiraParticle(
+      createVector(random(100, 200), random(100, 300)),
+      random(255),
+      30,
+      45,
+    ),
+  );
 }
-
 
 function draw() {
   background(255);
-  frameRate(10)
+  frameRate(10);
+  // @ts-ignore
   particles.forEach((particle) => {
     particle.display();
-
-    
-particle.move();
-
-
-
-  })
+  });
 }
 
 function windowResized() {
