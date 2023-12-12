@@ -7,10 +7,23 @@
 // They will help you while writing code.
 //@ts-ignore
 let particles = [];
-function setup() {
 
+const particleTypes = [
+  KatjaParticle,
+  DonoParticle,
+  isabella,
+  MireaParticle,
+  annes_particle,
+  mel,
+  PhillysParticle,
+  leleleParticle,
+  MiraParticle,
+];
+function setup() {
   createCanvas(windowWidth, windowHeight);
-  particles.push(new KatjaParticle(createVector(random(width), random(height),color(3))));
+  particles.push(
+    new KatjaParticle(createVector(random(width), random(height)), color(3))
+  );
 
   particles.push(new Particle(createVector(random(width), random(height))));
   particles.push(new MegaParticle(createVector(random(width), random(height))));
@@ -35,16 +48,10 @@ function setup() {
   particles.push(
     new annes_particle(createVector(random(width), random(height)))
   );
-  particles.push(new Particle(createVector(random(width), random(height))));
-
   particles.push(new mel(createVector(random(width), random(height))));
-
-
   particles.push(
     new PhillysParticle(createVector(random(width), random(height)))
   );
-
-  particles.push(new MegaParticle(createVector(random(width), random(height))));
   particles.push(
     new leleleParticle(createVector(random(width), random(height)))
   );
@@ -56,8 +63,6 @@ function setup() {
       45
     )
   );
-
-
 }
 
 function draw() {
@@ -73,3 +78,23 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
+function mousePressed() {
+  const p = particleTypes[Math.floor(random(particleTypes.length))];
+  if (p instanceof MiraParticle) {
+    particles.push(new p(createVector(mouseX, mouseY), random(255), 30, 45));
+  } else if (p instanceof isabella) {
+    particles.push(
+      new p(
+        createVector(random(width), random(height)),
+        5,
+        10,
+        10,
+        random(255),
+        random(255),
+        random(255)
+      )
+    );
+  } else {
+    particles.push(new p(createVector(mouseX, mouseY)));
+  }
+}
