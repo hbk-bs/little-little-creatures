@@ -39,25 +39,6 @@ moveStar() {
 }
 }
 
-let stars = [];
-let i;
-
-function setup() { 
-    createCanvas(900, 600);
-}
-
-function draw() {
-    background(20, 35, 50, 160);
-    let s = new Star(random(0,width), random(0,height/2), random(2,4), random(2,7), 5, 250, 250, 200);
-    for ( i = 0; i < random(3); i+=1) {
-        stars.push(s); }
-        star.moveStar();
-        star.createStar();
-}
- function mouseDragged(){
-    stars.push(new Star(mouseX, mouseY, random(4, 6), random(7, 12), 5, 155, 200, 200));
-
- }
 
 
 
