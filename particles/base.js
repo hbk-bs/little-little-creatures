@@ -1,5 +1,13 @@
-class  Particle {
+class Particle {
+  /**
+   * @type {import("p5").Vector}
+   */
+
   pos;
+
+  /**
+   * @param {import("p5").Vector} pos
+   */
   constructor(pos) {
     this.pos = pos;
   }
