@@ -31,6 +31,9 @@ function setup() {
   particles.push(new Particle(createVector(random(width), random(height))));
   particles.push(new MegaParticle(createVector(random(width), random(height))));
 
+  particles.push(new bleonaParticle(createVector(random(width), random(height))));
+
+
   particles.push(new DonoParticle(createVector(random(width), random(height))));
 
   particles.push(
@@ -67,13 +70,14 @@ function setup() {
     )
   );
   	particles.push(new hannahsoophie(x, y, color(random(255), random(100), 255)));
-
 }
 
 
 
 function draw() {
- 
+
+
+
   background(255, 10);
 	for (let i = 0; i < particles.length; i++) {
 		// update particle
@@ -84,13 +88,11 @@ function draw() {
 	}
 }
 
-
-
-
-
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
+
+
 
 function mousePressed() {
   const p = particleTypes[Math.floor(random(particleTypes.length))];
@@ -112,3 +114,4 @@ function mousePressed() {
     particles.push(new p(createVector(mouseX, mouseY)));
   }
 }
+
