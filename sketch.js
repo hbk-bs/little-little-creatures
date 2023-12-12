@@ -18,13 +18,13 @@ function setup() {
 
   particles.push(new Particle(createVector(random(width), random(height))));
   particles.push(new MegaParticle(createVector(random(width), random(height))));
+  particles.push(new isabella(createVector(random(width), random(height))));
   particles.push(new annes_particle(createVector(random(width), random(height))));
   //particles.push(new Particle(createVector(random(width), random(height))));
   //particles.push(new MegaParticle(createVector(random(width), random(height))));
   particles.push(
     new leleleParticle(createVector(random(width), random(height))),
   );
-
 }
 
 function draw() {
