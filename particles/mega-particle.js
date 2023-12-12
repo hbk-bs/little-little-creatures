@@ -1,4 +1,7 @@
 class MegaParticle extends Particle {
+  /**
+   * @param {import("p5").Vector} pos
+   */
   constructor(pos) {
     super(pos);
   }
