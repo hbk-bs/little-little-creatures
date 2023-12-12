@@ -12,5 +12,12 @@
   "dependencies": {
     "@types/p5": "1.7.4",
     "p5": "1.9.0"
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": false,
+    "useTabs": false,
+    "printWidth": 80
   }
 }

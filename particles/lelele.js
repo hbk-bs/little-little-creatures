@@ -1,6 +1,9 @@
 // @ts-check
-
 class leleleParticle extends Particle {
+
+  /**
+   * @param {import("p5").Vector} pos
+   */
   constructor(pos) {
     super(pos);
     this.angle1 = 0;
@@ -19,6 +22,7 @@ class leleleParticle extends Particle {
   display() {
     push();
     translate(this.pos.x, this.pos.y);
+
     let currentTime = millis();
     let deltaTime = currentTime - this.lastTime; // Zeitdifferenz zwischen den Frames in Millisekunden
     this.lastTime = currentTime; // Aktualisiere die Zeit des letzten Frames
@@ -31,6 +35,7 @@ class leleleParticle extends Particle {
 
     let x2 = cos(this.angle2) * this.distance;
     let y2 = sin(this.angle2) * this.distance;
+
 
     let transitionRatio =
       (currentTime - this.transitionStart) / this.transitionDuration;
@@ -89,6 +94,53 @@ class leleleParticle extends Particle {
       this.transitionStart = currentTime;
     }
     pop();
+
+    // Erste Ellipse mit radialen Verlauf
+    noStroke();
+    for (let i = 0; i < this.gradientRadius; i++) {
+      let lerpedColor = lerpColor(
+        lerpedColorA,
+        color(
+          lerpedColorA.levels[0],
+          lerpedColorA.levels[1],
+          lerpedColorA.levels[2],
+          0,
+        ),
+        i / this.gradientRadius,
+      );
+      fill(lerpedColor);
+      ellipse(this.pos.x, this.pos.y, 20 + i * 2, 20 + i * 2);
+    }
+
+    // Zweite Ellipse mit radialen Verlauf
+    for (let i = 0; i < this.gradientRadius; i++) {
+      let lerpedColor = lerpColor(
+        lerpedColorB,
+        color(
+          lerpedColorB.levels[0],
+          lerpedColorB.levels[1],
+          lerpedColorB.levels[2],
+          0,
+        ),
+        i / this.gradientRadius,
+      );
+      fill(lerpedColor);
+      ellipse(x2, y2, 20 + i * 2, 20 + i * 2);
+    }
+
+    // Verbindungslinie zwischen den Ellipsen bleibt schwarz
+    noStroke();
+    line(this.pos.x, this.pos.y, x2, y2);
+
+    // Wenn die Übergangszeit abgelaufen ist, aktualisiere die Farben und starte den Übergang erneut
+    if (currentTime - this.transitionStart >= this.transitionDuration) {
+      this.colorA = this.colorB;
+      this.colorB = color(random(255), random(255), random(255));
+      this.transitionStart = currentTime;
+    }
+
+
+
   }
 }
 
