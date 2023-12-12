@@ -23,11 +23,13 @@ function setup() {
       random(255),
     ),
   );
+      new MireaParticle(createVector(random(width), random(height))));
+
   particles.push(
     new annes_particle(createVector(random(width), random(height))),
   );
-  //particles.push(new Particle(createVector(random(width), random(height))));
-  //particles.push(new MegaParticle(createVector(random(width), random(height))));
+  particles.push(new Particle(createVector(random(width), random(height))));
+  particles.push(new MegaParticle(createVector(random(width), random(height))));
   particles.push(
     new leleleParticle(createVector(random(width), random(height))),
   );
@@ -40,16 +42,20 @@ function setup() {
     ),
   );
 }
+}
 
 function draw() {
   background(255);
   frameRate(10);
   // @ts-ignore
   particles.forEach((particle) => {
-    particle.display();
+    particle.display();  
   });
+
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
+
+
