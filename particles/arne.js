@@ -1,32 +1,41 @@
 class arne {
-    pos;
-    col ;
-    lifetime;
+  pos;
+  col;
+  lifetime;
 
-    constructor(pos, col , lifetime) {
-      this.pos = pos;	
-      this.col = col;
-      this.lifetime = 100;
-    }
-  
-    display() {
-     
-      if (this.lifetime > 0) {
-        push();
-        noStroke();
-        fill(this.col); 
-        text(this.pos.x, this.pos.y, random(width), random(height));
+  constructor(pos, col, lifetime) {
+    this.pos = pos;
+    this.col = col;
+    this.lifetime = lifetime;
+  }
 
-        pop();
-      }
+  display() {
+    if (this.lifetime > 0) {
+      push();
+      noStroke();
+      fill(this.col);
+      /**
+       * text takes other argments. See the documentation
+       * https://p5js.org/reference/#/p5/text
+       * text(str, x, y, [maxWidth], [maxHeight])
+       *
+       */
+      text(
+        "Hello world",
+        this.pos.x,
+        this.pos.y
+        // random(width),
+        // random(height)
+      );
+
+      pop();
+      this.update();
     }
-    update() {
-        this.lifetime--;
-        if (this.lifetime <= 0) {
-            this.lifetime = 0;
-        }
+  }
+  update() {
+    this.lifetime--;
+    if (this.lifetime <= 0) {
+      this.lifetime = 0;
     }
+  }
 }
-
-  
- 
