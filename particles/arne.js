@@ -1,9 +1,9 @@
 class arne {
     pos;
-    col;
+    col ;
     lifetime;
 
-    constructor(pos, col, lifetime) {
+    constructor(pos, col , lifetime) {
       this.pos = pos;	
       this.col = col;
       this.lifetime = 100;
@@ -21,7 +21,6 @@ class arne {
       }
     }
     update() {
-        // this.lifetime = this.lifetime -1;
         this.lifetime--;
         if (this.lifetime <= 0) {
             this.lifetime = 0;
