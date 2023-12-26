@@ -1,3 +1,0 @@
-node_modules/*
-!node_modules/@types/p5/*.d.ts
-node_modules/p5/*

@@ -150,5 +150,5 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 # Windows shortcuts
-*.lnk
-node_modules
+**/node_modules/*
+!client/node_modules/@types/p5/*.d.ts
