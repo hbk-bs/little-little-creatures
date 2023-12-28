@@ -9,6 +9,8 @@ import WebSocket, { WebSocketServer } from "ws";
 
 const bodyJsonSchema = S.object()
 	.prop("channel", S.string().required())
+	.prop("measurements", S.array().items(S.integer()).required())
+
 	.additionalProperties(true);
 
 const NODE_ENV = process.env.NODE_ENV ?? "none";
