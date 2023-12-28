@@ -6,7 +6,7 @@ class LittleCreature {
 	constructor({
 		x = 0,
 		y = 0,
-		host = "ws://192.168.178.70:3000/ws/",
+		host = "ws://cyberdeck.local:3000/ws/",
 		channel = "little-creature",
 	}) {
 		this.url = `${host}${channel}`;
