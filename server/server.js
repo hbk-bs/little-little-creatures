@@ -63,8 +63,8 @@ fastify.post(
 			return reply.status(400).send({ error: "Missing channel or data" });
 		}
 
-		fastify.log.info(
-			`Received message from channel ${channel} with data ${data}`
+		fastify.log.info(data,
+			`Received message from channel ${channel}`
 		);
 
 		// Check if channel exists
