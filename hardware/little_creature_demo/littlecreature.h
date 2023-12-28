@@ -9,6 +9,7 @@ struct LittleCreature_Options {
   String creature_name = "little-creature"; // unused
   String ssid = ""; // unused
   String password = ""; // unused
+  String host = ""; // unused
 };
 
 class LittleCreature {

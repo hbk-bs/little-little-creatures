@@ -1,2 +1,2 @@
-#define SECRET_SSID "cia surveillance van"
-#define SECRET_PASS "123password"
+#define SECRET_SSID "openWrt"
+#define SECRET_PASS ""

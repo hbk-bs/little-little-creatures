@@ -7,8 +7,8 @@ int status = WL_IDLE_STATUS;
 int port = 3000;
 String url_params = "/arduino";
 WiFiClient client;
-//char server[] = "jsonplaceholder.typicode.com";
-IPAddress server(192,168,178,70);
+char server[] = "cyberdeck.local";
+//IPAddress server(192,168,178,70);
 
 LittleCreature::LittleCreature() {
 }
