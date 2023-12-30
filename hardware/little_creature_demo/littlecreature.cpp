@@ -42,7 +42,13 @@ void LittleCreature::begin(LittleCreature_Options options) {
     Serial.print("Attempting to connect to SSID: ");
     Serial.println(ssid);
     // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
-    status = WiFi.begin(ssid.c_str(), password.c_str());
+    if (password.length() > 0) {
+      status = WiFi.begin(ssid.c_str(), password.c_str());
+    } else {
+      status = WiFi.begin(ssid.c_str());
+    }
+
+
 
     // wait 10 seconds for connection:
     //delay(10000);
