@@ -13,9 +13,16 @@ const bodyJsonSchema = S.object()
 
 	.additionalProperties(true);
 
-const NODE_ENV = process.env.NODE_ENV ?? "none";
+const isTestEnv = process.argv.includes("--test");
+
+const isDevEnv = process.argv.includes("--dev");
+
+const NODE_ENV = isTestEnv ? "test" : isDevEnv ? "development" : "production";
+
+console.log(NODE_ENV);
+
 const LOG_LEVEL = process.env.LOG_LEVEL ?? "info";
-const envToLogger = {
+const envToLogger: Record<string, unknown> = {
 	development: {
 		level: LOG_LEVEL,
 		transport: {
@@ -35,7 +42,7 @@ const fastify = Fastify({
 	disableRequestLogging:
 		NODE_ENV === "development" || NODE_ENV === "test" ? false : true,
 });
-const channels = {};
+const channels: Record<string, WebSocket[]> = {};
 
 // Register the plugin
 fastify.register(fastifyStatic, {
@@ -50,7 +57,7 @@ fastify.get("/board/", async (request, reply) => {
 	return reply.sendFile("index.html");
 });
 // Define POST route for Arduino boards
-fastify.post(
+fastify.post<{ Body: { channel: string } }>(
 	"/arduino",
 	{
 		schema: {
@@ -65,9 +72,7 @@ fastify.post(
 			return reply.status(400).send({ error: "Missing channel or data" });
 		}
 
-		fastify.log.info(data,
-			`Received message from channel ${channel}`
-		);
+		fastify.log.info(data, `Received message from channel ${channel}`);
 
 		// Check if channel exists
 		if (!channels[channel]) {
