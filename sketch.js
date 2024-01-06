@@ -21,6 +21,7 @@ const particleTypes = [
   MiraParticle,
   hannahsoophie,
   bleonaParticle,
+  arne,
 ];
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -30,6 +31,14 @@ function setup() {
 
   particles.push(new Particle(createVector(random(width), random(height))));
   particles.push(new MegaParticle(createVector(random(width), random(height))));
+
+  particles.push(
+    new arne(
+      createVector(random(width), random(height)),
+      color(random(10)),
+      random(200, 500)
+    )
+  );
 
   particles.push(
     new bleonaParticle(createVector(random(width), random(height)))
@@ -81,6 +90,7 @@ function draw() {
     // update particle
     //particles[i].move();
     // display particle
+    // @ts-ignore
     particles[i].display();
     //particles[i].update();
   }
@@ -94,6 +104,14 @@ function mousePressed() {
   const p = particleTypes[Math.floor(random(particleTypes.length))];
   if (p instanceof MiraParticle) {
     particles.push(new p(createVector(mouseX, mouseY), random(255), 30, 45));
+  } else if (p instanceof arne) {
+    particles.push(
+      new arne(
+        createVector(mouseX, mouseY), // pos
+        color(random(0, 50)), // color
+        300 // lifetime
+      )
+    );
   } else if (p instanceof isabella) {
     particles.push(
       new p(

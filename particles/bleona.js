@@ -17,7 +17,7 @@ class bleonaParticle extends Particle {
     this.restartThreshold = 100;
   }
   display() {
-    console.log("Displaying BleonaParticle");
+    // console.log("Displaying BleonaParticle");
     if (this.growthRate > 0) {
       push();
       noStroke();
@@ -29,7 +29,7 @@ class bleonaParticle extends Particle {
   }
 
   update() {
-    console.log("Updating BleonaParticle");
+    // console.log("Updating BleonaParticle");
     this.size += this.growthRate;
     if (this.frameCount < 1) {
       this.size += this.growthRate;

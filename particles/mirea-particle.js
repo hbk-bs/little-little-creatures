@@ -17,7 +17,7 @@ class MireaParticle extends Particle {
     strokeWeight(1);
     stroke(0);
     if (frameCount % 100 === 0) {
-      console.log('change');
+      // console.log('change');
       this.endPositions = this.calcEndPositions();
     }
 
@@ -45,7 +45,7 @@ class MireaParticle extends Particle {
     const temporaryEndPositions = [];
     for (let i = 0; i < this.numberOfLines; i++) {
       temporaryEndPositions.push(
-        createVector(random(-this.a, this.a), random(-this.a, this.a)),
+        createVector(random(-this.a, this.a), random(-this.a, this.a))
       );
     }
     return temporaryEndPositions;
