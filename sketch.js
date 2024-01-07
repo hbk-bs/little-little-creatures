@@ -7,6 +7,7 @@
 // They will help you while writing code.
 //@ts-ignore
 let particles = [];
+
 function setup() {
 
   createCanvas(windowWidth, windowHeight);
