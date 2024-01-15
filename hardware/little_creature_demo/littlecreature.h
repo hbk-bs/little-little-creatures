@@ -5,14 +5,16 @@
 #include "arduino_secrets.h"
 #include "utils.h"
 
-struct LittleCreature_Options {
-  String creature_name = "little-creature"; // unused
-  String ssid = ""; // unused
-  String password = ""; // unused
-  String host = ""; // unused
+struct LittleCreature_Options
+{
+  String creature_name = "little-creature";
+  String ssid = "openWrt";
+  String password = "";
+  String host = "cypberdeck.local";
 };
 
-class LittleCreature {
+class LittleCreature
+{
 public:
   LittleCreature();
   void begin();
@@ -20,10 +22,10 @@ public:
   void postRequest(std::vector<double> measurements);
   void incomingRequest();
 
-
 private:
-  String ssid = SECRET_SSID;
-  String password = SECRET_PASS;
-  String creature_name = "little-creature";
+  String server = "";
+  String ssid = "";
+  String password = "";
+  String creature_name = "";
 };
 #endif

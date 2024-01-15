@@ -1,32 +1,36 @@
 #include "Arduino.h"
 #include "WiFiS3.h"
-#include "arduino_secrets.h"
 #include "littlecreature.h"
 
 int status = WL_IDLE_STATUS;
 int port = 3000;
 String url_params = "/arduino";
 WiFiClient client;
-char server[] = "cyberdeck.local";
-//IPAddress server(192,168,178,70);
 
-LittleCreature::LittleCreature() {
+// IPAddress server(192,168,178,70);
+
+LittleCreature::LittleCreature()
+{
 }
 
-void LittleCreature::begin() {
+void LittleCreature::begin()
+{
   LittleCreature_Options options;
   begin(options);
 }
 
-void LittleCreature::begin(LittleCreature_Options options) {
+void LittleCreature::begin(LittleCreature_Options options)
+{
   Serial.print("options.creature_name: ");
   Serial.println(options.creature_name);
   creature_name = options.creature_name;
-  // password = options.password;
-  // ssid = options.ssid;
+  server = options.server;
+  password = options.password;
+  ssid = options.ssid;
 
   // check for the WiFi module:
-  if (WiFi.status() == WL_NO_MODULE) {
+  if (WiFi.status() == WL_NO_MODULE)
+  {
     Serial.println("Communication with WiFi module failed!");
     // don't continue
     while (true)
@@ -34,24 +38,27 @@ void LittleCreature::begin(LittleCreature_Options options) {
   }
 
   String fv = WiFi.firmwareVersion();
-  if (fv < WIFI_FIRMWARE_LATEST_VERSION) {
+  if (fv < WIFI_FIRMWARE_LATEST_VERSION)
+  {
     Serial.println("Please upgrade the firmware");
   }
   // attempt to connect to WiFi network:
-  while (status != WL_CONNECTED) {
+  while (status != WL_CONNECTED)
+  {
     Serial.print("Attempting to connect to SSID: ");
     Serial.println(ssid);
     // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
-    if (password.length() > 0) {
+    if (password.length() > 0)
+    {
       status = WiFi.begin(ssid.c_str(), password.c_str());
-    } else {
+    }
+    else
+    {
       status = WiFi.begin(ssid.c_str());
     }
 
-
-
     // wait 10 seconds for connection:
-    //delay(10000);
+    // delay(10000);
   }
   // print the SSID of the network you're attached to:
   Serial.print("SSID: ");
@@ -69,34 +76,44 @@ void LittleCreature::begin(LittleCreature_Options options) {
   Serial.println(" dBm");
 }
 
-void LittleCreature::incomingRequest() {
+void LittleCreature::incomingRequest()
+{
   uint32_t received_data_num = 0;
 
-  while (client.available()) {
+  while (client.available())
+  {
     /* actual data reception */
     char c = client.read();
     /* print data to serial port */
     Serial.print(c);
     /* wrap data to 80 columns*/
     received_data_num++;
-    if (received_data_num % 80 == 0) {
+    if (received_data_num % 80 == 0)
+    {
     }
   }
 }
 
-void LittleCreature::postRequest(std::vector<double> measurements) {
+void LittleCreature::postRequest(std::vector<double> measurements)
+{
 
   client.stop();
-  if (client.connect(server, port)) {
+  if (client.connect(server, port))
+  {
 
-    if (measurements.begin() == measurements.end()) {
+    if (measurements.begin() == measurements.end())
+    {
       return;
     }
     String m = "";
-    for (std::size_t i = 0; i < measurements.size(); ++i) {
-      if (i != measurements.size() - 1) {
+    for (std::size_t i = 0; i < measurements.size(); ++i)
+    {
+      if (i != measurements.size() - 1)
+      {
         m += clear_pad(measurements[i]) + ", ";
-      } else {
+      }
+      else
+      {
         m += clear_pad(measurements[i]);
       }
     }
@@ -112,22 +129,27 @@ void LittleCreature::postRequest(std::vector<double> measurements) {
     client.println("Connection: close");
     client.println();
     client.println(payload);
-    while (client.connected()) {
+    while (client.connected())
+    {
       String line = client.readStringUntil('\n');
-      if (line == "\r") {
+      if (line == "\r")
+      {
         Serial.println("POST Success!");
         break;
       }
     }
     // if there are incoming bytes available
     // from the server, read them and print them:
-    while (client.available()) {
+    while (client.available())
+    {
       char c = client.read();
 
       Serial.write(c);
     }
     Serial.println();
-  } else {
+  }
+  else
+  {
     Serial.println("Connection failed");
   }
 }
