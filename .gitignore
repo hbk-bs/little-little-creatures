@@ -149,5 +149,7 @@ $RECYCLE.BIN/
 *.msix
 *.msm
 *.msp
-# Windows shortcuts
-*.lnk
+node_modules
+
+server/.envrc
+hardware/little_creature_demo/arduino_secrets.h
