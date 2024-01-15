@@ -1,11 +1,12 @@
 //@ts-check
 import Fastify from "fastify";
-
+import cors from "@fastify/cors";
 import { S } from "fluent-json-schema";
-import fastifyStatic from "@fastify/static";
-import { resolve } from "path";
+// import fastifyStatic from "@fastify/static";
+// import { resolve } from "path";
 
 import WebSocket, { WebSocketServer } from "ws";
+import { getHostnameAndIP } from "./lib/util.js";
 
 const bodyJsonSchema = S.object()
 	.prop("channel", S.string().required())
@@ -19,7 +20,12 @@ const isDevEnv = process.argv.includes("--dev");
 
 const NODE_ENV = isTestEnv ? "test" : isDevEnv ? "development" : "production";
 
-console.log(NODE_ENV);
+const envPort = process.env.PORT;
+
+const port =
+	isNaN(parseInt(`${envPort}`)) || envPort === undefined
+		? 3000
+		: parseInt(`${envPort}`);
 
 const LOG_LEVEL = process.env.LOG_LEVEL ?? "info";
 const envToLogger: Record<string, unknown> = {
@@ -42,20 +48,25 @@ const fastify = Fastify({
 	disableRequestLogging:
 		NODE_ENV === "development" || NODE_ENV === "test" ? false : true,
 });
+
+await fastify.register(cors, {
+	origin: true,
+});
+
 const channels: Record<string, WebSocket[]> = {};
 
 // Register the plugin
-fastify.register(fastifyStatic, {
-	root: resolve(process.cwd(), "./public"), // path to your directory
-	prefix: "/", // optional: default '/'
-});
+// fastify.register(fastifyStatic, {
+// 	root: resolve(process.cwd(), "./public"), // path to your directory
+// 	prefix: "/", // optional: default '/'
+// });
 
-fastify.get("/", async (request, reply) => {
-	return reply.sendFile("index.html");
-});
-fastify.get("/board/", async (request, reply) => {
-	return reply.sendFile("index.html");
-});
+// fastify.get("/", async (request, reply) => {
+// 	return reply.sendFile("index.html");
+// });
+// fastify.get("/board/", async (request, reply) => {
+// 	return reply.sendFile("index.html");
+// });
 // Define POST route for Arduino boards
 fastify.post<{ Body: { channel: string } }>(
 	"/arduino",
@@ -96,7 +107,7 @@ fastify.post<{ Body: { channel: string } }>(
 // Start the server
 const start = async () => {
 	try {
-		await fastify.listen({ port: 3000, host: "0.0.0.0" });
+		await fastify.listen({ port, host: "0.0.0.0" });
 		const wss = new WebSocketServer({ server: fastify.server });
 
 		wss.on("connection", (ws, req) => {
@@ -137,7 +148,10 @@ const start = async () => {
 			});
 		});
 
-		console.log("Server running at http://localhost:3000/");
+		const { hostname, address } = await getHostnameAndIP();
+		console.log(`Server running at http://${"localhost"}:3000`);
+		console.log(`Server running at http://${hostname}:3000`);
+		console.log(`Server running at http://${address}:3000`);
 	} catch (err) {
 		console.error(err);
 		process.exit(1);
