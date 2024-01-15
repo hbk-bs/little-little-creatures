@@ -149,15 +149,7 @@ $RECYCLE.BIN/
 *.msix
 *.msm
 *.msp
-node_modules/*
-!node_modules/
-!node_modules/@types/
-!node_modules/@types/p5/
-client/node_modules/.package-lock.json
-client/node_modules/@types/p5/LICENSE
-client/node_modules/@types/p5/package.json
-client/node_modules/@types/p5/README.md
-client/node_modules/p5
-server/node_modules
+node_modules
+
 server/.envrc
 hardware/little_creature_demo/arduino_secrets.h
