@@ -148,10 +148,13 @@ const start = async () => {
 			});
 		});
 
-		const { hostname, address } = await getHostnameAndIP();
-		console.log(`Server running at http://${"localhost"}:3000`);
-		console.log(`Server running at http://${hostname}:3000`);
-		console.log(`Server running at http://${address}:3000`);
+		const { hostname, address, error } = await getHostnameAndIP();
+		if (error) {
+			console.error(`Failed to get IP from hostname due to: ${error}`);
+		}
+		console.log(`Server running at http://localhost:3000`);
+		if (hostname) console.log(`Server running at http://${hostname}:3000`);
+		if (address) console.log(`Server running at http://${address}:3000`);
 	} catch (err) {
 		console.error(err);
 		process.exit(1);
