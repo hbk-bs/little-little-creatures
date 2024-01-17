@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "nodemon server.ts"
+		"dev": "nodemon server.ts --dev"
 	},
 	"keywords": [],
 	"author": "ff6347 <hash@ff6347.email>",
@@ -47,8 +47,8 @@
 			"js": "tsx"
 		},
 		"watch": [
-			"*.js",
-			"public/*"
+			"**/*.js",
+			"**/*.ts"
 		]
 	}
 }
