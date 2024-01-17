@@ -55,11 +55,11 @@ document.addEventListener('DOMContentLoaded', function () {
       if (response.ok) {
         const json = await response.json();
         console.log(json);
-        code.innerText = json;
+        code.innerText = JSON.stringify(json, null, 2);
       } else {
         const json = await response.text();
         console.log(json);
-        code.innerText = json;
+        code.innerText = JSON.stringify(json, null, 2);
       }
     } catch (error) {
       console.error(error);
