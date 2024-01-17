@@ -43,6 +43,6 @@
       "titleBar.inactiveForeground": "#e7e7e799"
     },
     "peacock.color": "016b6e",
-    "liveServer.settings.multiRootWorkspaceName": "board_simulator"
+    "liveServer.settings.multiRootWorkspaceName": "frontend"
   }
 }
