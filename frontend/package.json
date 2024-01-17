@@ -7,7 +7,7 @@
     "lib": "lib"
   },
   "scripts": {
-    "predev":"cp ./node_modules/p5/lib/p5.min.js ./lib/ && cp ./node_modules/p5/lib/addons/p5.sound.min.js ./lib/",
+    "predev": "mkdirp ./lib/addons && cp ./node_modules/p5/lib/p5*.js ./lib/ && cp ./node_modules/p5/lib/addons/p5*.js ./lib/addons",
     "dev": "nodemon"
   },
   "keywords": [],
@@ -16,6 +16,7 @@
   "devDependencies": {
     "@types/p5": "1.7.6",
     "http-server": "14.1.1",
+    "mkdirp": "3.0.1",
     "nodemon": "3.0.3"
   },
   "dependencies": {
