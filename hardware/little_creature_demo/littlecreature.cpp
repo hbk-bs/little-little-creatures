@@ -1,11 +1,13 @@
 #include "Arduino.h"
 #include "WiFiS3.h"
+#include "WiFiSSLClient.h"
+
 #include "littlecreature.h"
 
 int status = WL_IDLE_STATUS;
-int port = 3000;
+int port = 443;
 String url_params = "/arduino";
-WiFiClient client;
+WiFiSSLClient client;
 
 // IPAddress server(192,168,178,70);
 
@@ -24,7 +26,7 @@ void LittleCreature::begin(LittleCreature_Options options)
   Serial.print("options.creature_name: ");
   Serial.println(options.creature_name);
   creature_name = options.creature_name;
-  server = options.server;
+  server = options.host;
   password = options.password;
   ssid = options.ssid;
 
@@ -98,7 +100,7 @@ void LittleCreature::postRequest(std::vector<double> measurements)
 {
 
   client.stop();
-  if (client.connect(server, port))
+  if (client.connect(server.c_str(), port))
   {
 
     if (measurements.begin() == measurements.end())
