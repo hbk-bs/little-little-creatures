@@ -4,6 +4,7 @@ import cors from "@fastify/cors";
 import { S } from "fluent-json-schema";
 // import fastifyStatic from "@fastify/static";
 // import { resolve } from "path";
+import { SerialPort } from "serialport";
 
 import WebSocket, { WebSocketServer } from "ws";
 import { getHostnameAndIP } from "./lib/util.js";
@@ -99,7 +100,7 @@ fastify.post<{ Body: { channel: string } }>(
 			}
 		});
 		reply.status(201).send({ status: "ok" });
-	}
+	},
 );
 
 // Create a WebSocket server and attach it to the Fastify server
@@ -107,9 +108,51 @@ fastify.post<{ Body: { channel: string } }>(
 // Start the server
 const start = async () => {
 	try {
+		const ports = await SerialPort.list();
+		console.log(ports);
+		// Create a port
+		const board = new SerialPort({
+			path: "/dev/tty.usbmodemDC5475CDC3542",
+			baudRate: 9600,
+			autoOpen: true,
+		});
 		await fastify.listen({ port, host: "0.0.0.0" });
 		const wss = new WebSocketServer({ server: fastify.server });
+		// The open event is always emitted
+		board.on("open", function () {
+			console.log("Port to board open");
+		});
+		// Switches the port into "flowing mode"
+		board.on("data", function (data) {
+			const dataFromBoard = data.toString().split("data:")[1];
 
+			const body = JSON.parse(dataFromBoard);
+			{
+				// Parse incoming data
+
+				const { channel, ...rest } = body;
+				if (!channel) {
+					console.log("Missing channel or data");
+					return;
+				}
+
+				fastify.log.info(rest, `Received message from channel ${channel}`);
+
+				// Check if channel exists
+				if (!channels[channel]) {
+					console.log(`Channel "${channel}" does not exist`);
+					return;
+				}
+
+				// Broadcast message to all connections in the channel
+				channels[channel].forEach((conn) => {
+					if (conn.readyState === WebSocket.OPEN) {
+						conn.send(JSON.stringify({ ...rest, channel }));
+					}
+				});
+				console.log("Sent data to clients");
+			}
+		});
 		wss.on("connection", (ws, req) => {
 			console.log("Client connected");
 			if (!req.url) {
