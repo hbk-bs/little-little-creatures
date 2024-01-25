@@ -1,63 +1,47 @@
-#include "littlecreature.h"
-#include "arduino_secrets.h"
 #include "Adafruit_Debounce.h"
+#include <Arduino_JSON.h>
+
 #define WAKE_PIN 2
-Logger console;
-Logger_Options log_opts;
-LittleCreature creature;
-LittleCreature_Options opts;
-// unsigned long previous_millis = 0; // keeping track of time
-// unsigned long interval = 1000;     // 1 seconds
-Adafruit_Debounce button(WAKE_PIN, HIGH);
+
+Adafruit_Debounce button_wake(WAKE_PIN, LOW); // will be INPUT_PULLUP button_wake goes to ground
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(9600);
   while (!Serial) {
     ;
   }
-  opts.creature_name = "little-creature";
-  opts.host = "little-creatures-demo-server-white-firefly-6363.fly.dev";
-  opts.ssid = SECRET_SSID;
-  opts.password = SECRET_PASS;
-  creature.begin(opts);
-  logger.begin(log_opts);
+ 
+  button_wake.begin();
 }
 
 void loop() {
-  // unsigned long current_millis = millis(); // Keeping track of time.
-  button.update();
-  if (button.justPressed()) {
+  button_wake.update();
+  if (button_wake.justPressed()) {
     sendData(1, 0, 0);
   }
 
-  if (button.justReleased()) {
+  if (button_wake.justReleased()) {
     sendData(0, 0, 0);
   }
 
 
-  // if (current_millis - previous_millis >= interval)
-  // {
-  //   int reading = digitalRead(inputPin);
-  //   // Serial.println(reading);
-  //   creature.postRequest(std::vector<double>{
-
-  //       (double)reading,
-  //   });
-  //   // Set the previous_millis to the current_millis
-  //   // so we can keep track of the interval.
-  //   previous_millis = current_millis;
-  // }
 }
 
 void sendData(int wake_up, int reset_game, int trigger) {
-  creature.postRequest(std::vector<double>{
-    (double)wake_up,
-    (double)reset_game,
-    (double)trigger,
-  });
-  Serial.print(wake_up);
-  Serial.print(" ");
-  Serial.print(reset_game);
-  Serial.print(" ");
-  Serial.println(trigger);
+  JSONVar myObject;
+  JSONVar myArray;
+
+
+  myArray[0] = wake_up;
+  myArray[1] = reset_game;
+  myArray[2] = trigger;
+  // you can add more values here e.g.
+  // myArray[3] = something else;
+
+  // important dont edit below this line
+  myObject["measurements"] = myArray;
+  myObject["channel"] = "little-creatures";
+  String jsonString = JSON.stringify(myObject);
+  Serial.print("data:");
+  Serial.println(jsonString);
+  // The above code needs to stay intact
 }
