@@ -2,6 +2,8 @@
 #include "arduino_secrets.h"
 #include "Adafruit_Debounce.h"
 #define WAKE_PIN 2
+Logger console;
+Logger_Options log_opts;
 LittleCreature creature;
 LittleCreature_Options opts;
 // unsigned long previous_millis = 0; // keeping track of time
@@ -18,6 +20,7 @@ void setup() {
   opts.ssid = SECRET_SSID;
   opts.password = SECRET_PASS;
   creature.begin(opts);
+  logger.begin(log_opts);
 }
 
 void loop() {

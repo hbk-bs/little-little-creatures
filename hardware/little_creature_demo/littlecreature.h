@@ -1,3 +1,4 @@
+#include "api/Common.h"
 #ifndef LITTLECREATURE_H
 #define LITTLECREATURE_H
 #include <Arduino.h>
@@ -11,6 +12,7 @@ struct LittleCreature_Options
   String ssid = "openWrt";
   String password = "";
   String host = "cypberdeck.local";
+  boolean use_serial = false;
 };
 
 class LittleCreature
@@ -27,5 +29,6 @@ private:
   String ssid = "";
   String password = "";
   String creature_name = "";
+  boolean use_serial = false;
 };
 #endif

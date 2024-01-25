@@ -29,11 +29,12 @@ void LittleCreature::begin(LittleCreature_Options options)
   server = options.host;
   password = options.password;
   ssid = options.ssid;
+  use_serial = options.use_serial;
 
   // check for the WiFi module:
   if (WiFi.status() == WL_NO_MODULE)
   {
-    Serial.println("Communication with WiFi module failed!");
+    Serial.println("info: Communication with WiFi module failed!");
     // don't continue
     while (true)
       ;
@@ -42,12 +43,12 @@ void LittleCreature::begin(LittleCreature_Options options)
   String fv = WiFi.firmwareVersion();
   if (fv < WIFI_FIRMWARE_LATEST_VERSION)
   {
-    Serial.println("Please upgrade the firmware");
+    Serial.println("info: Please upgrade the firmware");
   }
   // attempt to connect to WiFi network:
   while (status != WL_CONNECTED)
   {
-    Serial.print("Attempting to connect to SSID: ");
+    Serial.print("info: Attempting to connect to SSID: ");
     Serial.println(ssid);
     // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
     if (password.length() > 0)
@@ -63,17 +64,17 @@ void LittleCreature::begin(LittleCreature_Options options)
     // delay(10000);
   }
   // print the SSID of the network you're attached to:
-  Serial.print("SSID: ");
+  Serial.print("info: SSID: ");
   Serial.println(WiFi.SSID());
 
   // print your board's IP address:
   IPAddress ip = WiFi.localIP();
-  Serial.print("IP Address: ");
+  Serial.print("info: IP Address: ");
   Serial.println(ip);
 
   // print the received signal strength:
   long rssi = WiFi.RSSI();
-  Serial.print("signal strength (RSSI):");
+  Serial.print("info: signal strength (RSSI):");
   Serial.print(rssi);
   Serial.println(" dBm");
 }
@@ -120,7 +121,7 @@ void LittleCreature::postRequest(std::vector<double> measurements)
       }
     }
     String payload = "{\"measurements\": [" + m + "], \"channel\" : \"" + creature_name + "\"}";
-    Serial.print("payload: ");
+    Serial.print("info: payload: ");
     Serial.println(payload);
     // Make a HTTP request:
     client.println("POST " + String(url_params) + " HTTP/1.0");
@@ -136,7 +137,7 @@ void LittleCreature::postRequest(std::vector<double> measurements)
       String line = client.readStringUntil('\n');
       if (line == "\r")
       {
-        Serial.println("POST Success!");
+        Serial.println("info: POST Success!");
         break;
       }
     }
@@ -152,6 +153,6 @@ void LittleCreature::postRequest(std::vector<double> measurements)
   }
   else
   {
-    Serial.println("Connection failed");
+    Serial.println("error: Connection failed");
   }
 }
