@@ -2,8 +2,8 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { S } from "fluent-json-schema";
-// import fastifyStatic from "@fastify/static";
-// import { resolve } from "path";
+import fastifyStatic from "@fastify/static";
+import { resolve } from "path";
 import { SerialPort } from "serialport";
 
 import WebSocket, { WebSocketServer } from "ws";
@@ -57,14 +57,14 @@ await fastify.register(cors, {
 const channels: Record<string, WebSocket[]> = {};
 
 // Register the plugin
-// fastify.register(fastifyStatic, {
-// 	root: resolve(process.cwd(), "./public"), // path to your directory
-// 	prefix: "/", // optional: default '/'
-// });
+fastify.register(fastifyStatic, {
+	root: resolve(process.cwd(), "./public"), // path to your directory
+	prefix: "/", // optional: default '/'
+});
 
-// fastify.get("/", async (request, reply) => {
-// 	return reply.sendFile("index.html");
-// });
+fastify.get("/", async (_request, reply) => {
+	return reply.sendFile("index.html");
+});
 // fastify.get("/board/", async (request, reply) => {
 // 	return reply.sendFile("index.html");
 // });
@@ -109,7 +109,7 @@ fastify.post<{ Body: { channel: string } }>(
 const start = async () => {
 	try {
 		const ports = await SerialPort.list();
-		console.log(ports);
+		fastify.log.info(ports);
 		// Create a port
 		const board = new SerialPort({
 			path: "/dev/tty.usbmodemDC5475CDC3542",
@@ -120,19 +120,27 @@ const start = async () => {
 		const wss = new WebSocketServer({ server: fastify.server });
 		// The open event is always emitted
 		board.on("open", function () {
-			console.log("Port to board open");
+			fastify.log.info("Port to board open");
 		});
 		// Switches the port into "flowing mode"
 		board.on("data", function (data) {
-			const dataFromBoard = data.toString().split("data:")[1];
-
+			const parsedData = data.toString();
+			if (!parsedData.startsWith("data:")) {
+				fastify.log.info("serial string did not match 'data:' pattern");
+				return;
+			}
+			const dataFromBoard = parsedData.toString().split("data:")[1];
+			if (!dataFromBoard) {
+				fastify.log.info("No data from board");
+				return;
+			}
 			const body = JSON.parse(dataFromBoard);
 			{
 				// Parse incoming data
 
 				const { channel, ...rest } = body;
 				if (!channel) {
-					console.log("Missing channel or data");
+					fastify.log.info("Missing channel or data");
 					return;
 				}
 
@@ -140,7 +148,7 @@ const start = async () => {
 
 				// Check if channel exists
 				if (!channels[channel]) {
-					console.log(`Channel "${channel}" does not exist`);
+					fastify.log.info(`Channel "${channel}" does not exist`);
 					return;
 				}
 
@@ -150,11 +158,11 @@ const start = async () => {
 						conn.send(JSON.stringify({ ...rest, channel }));
 					}
 				});
-				console.log("Sent data to clients");
+				fastify.log.info("Sent data to clients");
 			}
 		});
 		wss.on("connection", (ws, req) => {
-			console.log("Client connected");
+			fastify.log.info("Client connected");
 			if (!req.url) {
 				ws.close(1008, "Invalid URL");
 				return;
@@ -174,17 +182,17 @@ const start = async () => {
 			// Add connection to channel
 			channels[channel].push(ws);
 
-			console.log(`Client connected to channel ${channel}`);
+			fastify.log.info(`Client connected to channel ${channel}`);
 
 			ws.on("message", (message) => {
-				console.log(`Client message on channel ${channel}: ${message}`);
+				fastify.log.info(`Client message on channel ${channel}: ${message}`);
 			});
 			ws.on("error", (err) => {
 				console.error(err);
 				throw err;
 			});
 			ws.on("close", () => {
-				console.log(`Client disconnected from channel ${channel}`);
+				fastify.log.info(`Client disconnected from channel ${channel}`);
 
 				// Remove connection from channel
 				channels[channel] = channels[channel].filter((conn) => conn !== ws);
@@ -195,9 +203,9 @@ const start = async () => {
 		if (error) {
 			console.error(`Failed to get IP from hostname due to: ${error}`);
 		}
-		console.log(`Server running at http://localhost:3000`);
-		if (hostname) console.log(`Server running at http://${hostname}:3000`);
-		if (address) console.log(`Server running at http://${address}:3000`);
+		fastify.log.info(`Server running at http://localhost:3000`);
+		if (hostname) fastify.log.info(`Server running at http://${hostname}:3000`);
+		if (address) fastify.log.info(`Server running at http://${address}:3000`);
 	} catch (err) {
 		console.error(err);
 		process.exit(1);
