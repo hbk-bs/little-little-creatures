@@ -110,57 +110,67 @@ const start = async () => {
 	try {
 		const ports = await SerialPort.list();
 		fastify.log.info(ports);
-		// Create a port
-		const board = new SerialPort({
-			path: "/dev/tty.usbmodemDC5475CDC3542",
-			baudRate: 9600,
-			autoOpen: true,
-		});
 		await fastify.listen({ port, host: "0.0.0.0" });
 		const wss = new WebSocketServer({ server: fastify.server });
-		// The open event is always emitted
-		board.on("open", function () {
-			fastify.log.info("Port to board open");
-		});
-		// Switches the port into "flowing mode"
-		board.on("data", function (data) {
-			const parsedData = data.toString();
-			if (!parsedData.startsWith("data:")) {
-				fastify.log.info("serial string did not match 'data:' pattern");
-				return;
-			}
-			const dataFromBoard = parsedData.toString().split("data:")[1];
-			if (!dataFromBoard) {
-				fastify.log.info("No data from board");
-				return;
-			}
-			const body = JSON.parse(dataFromBoard);
-			{
-				// Parse incoming data
+		// Create a port
+		try {
+			const board = new SerialPort({
+				path: "/dev/tty.usbmodemDC5475CDC3542",
+				baudRate: 9600,
+				autoOpen: false,
+			});
 
-				const { channel, ...rest } = body;
-				if (!channel) {
-					fastify.log.info("Missing channel or data");
+			board.open();
+			board.on("error", (err) => {
+				fastify.log.error(err, "Error opening port to board");
+			});
+			// The open event is always emitted
+			board.on("open", function () {
+				fastify.log.info("Port to board open");
+			});
+			// Switches the port into "flowing mode"
+			board.on("data", function (data) {
+				const parsedData = data.toString();
+				if (!parsedData.startsWith("data:")) {
+					fastify.log.info("serial string did not match 'data:' pattern");
 					return;
 				}
-
-				fastify.log.info(rest, `Received message from channel ${channel}`);
-
-				// Check if channel exists
-				if (!channels[channel]) {
-					fastify.log.info(`Channel "${channel}" does not exist`);
+				const dataFromBoard = parsedData.toString().split("data:")[1];
+				if (!dataFromBoard) {
+					fastify.log.info("No data from board");
 					return;
 				}
+				const body = JSON.parse(dataFromBoard);
+				{
+					// Parse incoming data
 
-				// Broadcast message to all connections in the channel
-				channels[channel].forEach((conn) => {
-					if (conn.readyState === WebSocket.OPEN) {
-						conn.send(JSON.stringify({ ...rest, channel }));
+					const { channel, ...rest } = body;
+					if (!channel) {
+						fastify.log.info("Missing channel or data");
+						return;
 					}
-				});
-				fastify.log.info("Sent data to clients");
-			}
-		});
+
+					fastify.log.info(rest, `Received message from channel ${channel}`);
+
+					// Check if channel exists
+					if (!channels[channel]) {
+						fastify.log.info(`Channel "${channel}" does not exist`);
+						return;
+					}
+
+					// Broadcast message to all connections in the channel
+					channels[channel].forEach((conn) => {
+						if (conn.readyState === WebSocket.OPEN) {
+							conn.send(JSON.stringify({ ...rest, channel }));
+						}
+					});
+					fastify.log.info("Sent data to clients");
+				}
+			});
+		} catch (e) {
+			fastify.log.error(e, "Error opening port to board");
+		}
+
 		wss.on("connection", (ws, req) => {
 			fastify.log.info("Client connected");
 			if (!req.url) {
