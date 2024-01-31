@@ -115,7 +115,7 @@ const start = async () => {
 		// Create a port
 		try {
 			const board = new SerialPort({
-				path: "/dev/tty.usbmodemDC5475CDC3542",
+				path: "/dev/tty.usbmodemF412FA68EC842",
 				baudRate: 9600,
 				autoOpen: false,
 			});

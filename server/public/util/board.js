@@ -28,15 +28,15 @@ function windowResized() {
 const buttons = [];
 function setup() {
 	noCanvas();
-	const b0 = createButton("Button 1");
+	const b0 = createButton("Start");
 	b0.attribute("id", "0");
-	const b1 = createButton("Button 2");
+	const b1 = createButton("Knarren");
 	b1.attribute("id", "1");
-	const b2 = createButton("Button 3");
+	const b2 = createButton("Schnarchen");
 	b2.attribute("id", "2");
-	const b3 = createButton("Button 4");
+	const b3 = createButton("Aufwachen");
 	b3.attribute("id", "3");
-	const b4 = createButton("Button 5");
+	const b4 = createButton("Gewonnen");
 	b4.attribute("id", "4");
 	// @ts-ignore
 	buttons.push(b0, b1, b2, b3, b4);
