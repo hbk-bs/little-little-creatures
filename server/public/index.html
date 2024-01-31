@@ -40,12 +40,12 @@
 			function main() {
 				let serverUrl = "";
 				let scheme = "ws";
-				const { location } = document;
+				const { location: loc } = document;
 
-				if (location.protocol === "https:") {
+				if (loc.protocol === "https:") {
 					scheme += "s";
 				}
-				serverUrl = `${scheme}://${location.hostname}:${location.port}`;
+				serverUrl = `${scheme}://${loc.hostname}:${loc.port}`;
 
 				const ws = new WebSocket(`${serverUrl}/ws/little-creatures`);
 				ws.onmessage = function (event) {

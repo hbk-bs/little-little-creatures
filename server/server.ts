@@ -196,6 +196,32 @@ const start = async () => {
 
 			ws.on("message", (message) => {
 				fastify.log.info(`Client message on channel ${channel}: ${message}`);
+				try {
+					const body = JSON.parse(message.toString());
+					const { channel, ...data } = body;
+					if (!channel) {
+						fastify.log.warn("Missing channel or data");
+						return;
+					}
+
+					fastify.log.info(data, `Received message from channel ${channel}`);
+
+					// Check if channel exists
+					if (!channels[channel]) {
+						fastify.log.warn(`Channel "${channel}" does not exist`);
+						return;
+					}
+
+					// Broadcast message to all connections in the channel
+					channels[channel].forEach((conn) => {
+						if (conn.readyState === WebSocket.OPEN) {
+							conn.send(JSON.stringify({ ...data, channel }));
+						}
+					});
+					fastify.log.info("Sent data to clients");
+				} catch (e) {
+					fastify.log.error(e, "Error parsing ws message");
+				}
 			});
 			ws.on("error", (err) => {
 				console.error(err);
