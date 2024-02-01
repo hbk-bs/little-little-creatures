@@ -2,36 +2,29 @@
 let Fullscreen = false;
 
 //AUDIO
-let soundSnoring;
 let soundAufwachen;
 let soundKnarren;
-let soundSchnarchen;
-//let soundGewonnen;
 
 //VIDEO
 //schlafendes Monster
-let videoFish;
+let videoStart;
 //sich bewegendes Monster
-let videoDog;
+let videoSchnarchen;
 //Wütendes Monster (Verloren)
 let videoCow;
 //Sandwich (Gewonnen)
-let videoWater;
+let videoSandwich;
 
 let currentVideo;
 
 function preload() {
-    //AUDIO
-    soundSnoring = loadSound('assets/snoring.mp3');
     soundAufwachen = loadSound('assets/monster_roar.mp3');
     soundKnarren = loadSound('assets/knarren.mp3');
-    soundSchnarchen = loadSound('assets/lautes_schnarchen.mp3');
-    //soundGewonnen=loadSound(`assets/gewonnen.mp3`);
     //VIDEO
-    videoFish = createVideo('assets/fish.mp4');
-    videoDog = createVideo('assets/dog.mp4');
+    videoStart = createVideo('assets/start.mp4');
+    videoSchnarchen = createVideo('assets/schnarchen.mp4');
     videoCow = createVideo('assets/cow.mp4');
-    videoWater = createVideo('assets/sandwich.mp4');
+    videoSandwich = createVideo('assets/sandwich.mp4');
 
 }
 
@@ -80,11 +73,11 @@ ws.onmessage = function (event) {
 function setup() {
     const canvas = createCanvas(1920, 1080);
     canvas.parent("sketch");
-    currentVideo = videoFish;
-    videoFish.hide();
-    videoDog.hide();
+    currentVideo = videoStart;
+    videoStart.hide();
+    videoSchnarchen.hide();
     videoCow.hide();
-    videoWater.hide();
+    videoSandwich.hide();
 }
 
 
@@ -94,46 +87,29 @@ function draw() {
 
 }
 
-
-//schlafendes Monster
 function start() {
-    //AUDIO
-    soundSnoring.play();
-    //VIDEO
-    currentVideo = videoFish;
-    currentVideo.volume(0);
+    videoSandwich.stop();
+    videoSchnarchen.stop();
+    videoCow.stop();
+    currentVideo = videoStart;
     currentVideo.loop();
 }
 
 function knarren() {
-    //AUDIO
-    soundSnoring.stop();
     soundKnarren.play();
     soundKnarren.onended(start);
 }
 
-//sich bewegendes Monster
 function schnarchen() {
-    //AUDIO
-    playSubsetOfSound(5, 7);
-    soundSchnarchen.onended(start);
-    //VIDEO
-    currentVideo = videoDog;
-    currentVideo.volume(0.0);
+    videoStart.stop();
+    currentVideo = videoSchnarchen;
     currentVideo.play();
     currentVideo.onended(start);
 }
 
-//Ausschnitt soundSchnarchen
-function playSubsetOfSound(start, duration) {
-    soundSnoring.stop();
-    soundSchnarchen.play(0, 1, 1, start, start + duration);
-}
-
 //Wütendes Monster (Verloren)
 function aufwachen() {
-    //AUDIO
-    soundSnoring.stop();
+    videoStart.stop();
     soundAufwachen.play();
     //VIDEO
     currentVideo = videoCow;
@@ -141,13 +117,9 @@ function aufwachen() {
     currentVideo.play();
 }
 
-//Sandwich (Gewonnen)
 function gewonnen() {
-    //AUDIO
-    soundSnoring.stop();
-    //soundGewonnen.play();
-    //VIDEO
-    currentVideo = videoWater;
+    videoStart.stop();
+    currentVideo = videoSandwich;
     currentVideo.play();
 }
 
