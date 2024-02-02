@@ -1,4 +1,8 @@
-import { getKeyByValue, mutateRandomElements } from "./room-util.js";
+import { enableAdjacentButtons } from "./lib/enable-adjacent-buttons.js";
+import { mutateRandomElements } from "./lib/mutate-random-elements.js";
+import { sendData } from "./lib/send-data.js";
+import { getKeyByValue } from "./lib/util.js";
+
 const attributeName = "data-type";
 
 const ButtonTypes = {
@@ -13,13 +17,15 @@ const ButtonTypes = {
 let serverUrl = "";
 let scheme = "ws";
 const { location: loc } = document;
+let params = new URLSearchParams(document.location.search);
+const channel = params.get("channel") ?? "little-creatures";
 
 if (loc.protocol === "https:") {
 	scheme += "s";
 }
 serverUrl = `${scheme}://${loc.hostname}:${loc.port}`;
 
-const ws = new WebSocket(`${serverUrl}/ws/little-creatures`);
+const ws = new WebSocket(`${serverUrl}/ws/${channel}`);
 
 const buttonsInX = 7;
 const buttonsInY = 9;
@@ -45,15 +51,6 @@ for (let i = 0; i < buttonsInY; i++) {
 		button.style.height = `${h}px`;
 		button.disabled = true;
 		sketch.appendChild(button);
-
-		// const b = createElement("button", btnId);
-		// b.id(btnId); // Assign unique ID using button's 2D grid location.
-
-		// b.size(w, h);
-		// b.parent("sketch");
-		// b.attribute("disabled", "true");
-
-		// @ts-ignore
 		buttons[i][j] = button;
 	}
 }
@@ -82,17 +79,36 @@ mutateRandomElements({
 	attributeToCheck: attributeName,
 });
 
-const down = (e) => {
+mutateRandomElements({
+	array2d: buttons,
+	numberOfElements: 5,
+	modifierFunction: (buttonElement) => {
+		buttonElement.setAttribute(attributeName, `${ButtonTypes.lose}`);
+	},
+	attributeToCheck: attributeName,
+});
+
+/**
+ * Arrow function for handling a mouse down event.
+ * @param {MouseEvent} e - The mouse event.
+ * @param {"up"|"down"} type
+ */
+const mouseHandler = (e, type) => {
+	if (!e) return;
+
 	if (e.target) {
-		if (e.target.hasAttribute(attributeName)) {
+		/** @type {Element} */
+		const element = e.target;
+		if (element.hasAttribute(attributeName)) {
 			console.log(
+				type,
 				getKeyByValue(
 					ButtonTypes,
-					parseInt(e.target.attributes[attributeName].value)
-				)
+					parseInt(element.attributes[attributeName].value),
+				),
 			);
 
-			sendData(e.target.attributes[attributeName].value, "down");
+			sendData(ws, element.attributes[attributeName].value, type, channel);
 		} else {
 			console.log("no attribute");
 		}
@@ -102,65 +118,13 @@ const down = (e) => {
 buttons.forEach((row, i) => {
 	row.forEach((button, j) => {
 		button.addEventListener("mousedown", (e) => {
-			down(e);
+			mouseHandler(e, "down");
+			// button.removeAttribute("disabled");
+		});
+		button.addEventListener("mouseup", (e) => {
+			mouseHandler(e, "up");
 			button.removeAttribute("disabled");
 			enableAdjacentButtons(buttons, i, j);
 		});
 	});
 });
-
-/**
- * @param {string} id
- * @param {"up"|"down"} state
- */
-function dataTemplate(id, state) {
-	const calculatedMeasurements = [0, 0, 0, 0, 0].map((_e, i) => {
-		if (i === parseInt(id)) {
-			return state === "down" ? 1 : 0;
-		} else {
-			return 0;
-		}
-	});
-	const template = {
-		channel: "little-creatures",
-		measurements: calculatedMeasurements,
-	};
-	return template;
-}
-
-/**
- * @param { HTMLButtonElement[][]} buttons
- * @param {number} i
- * @param {number} j
- */
-function enableAdjacentButtons(buttons, i, j) {
-	//    // Enable button above if exists
-	if (i > 0) buttons[i - 1][j].removeAttribute("disabled");
-	// Enable button below if exists
-	if (i < buttons.length - 1) buttons[i + 1][j].removeAttribute("disabled");
-	// Enable the button on the left if exists
-	if (j > 0) buttons[i][j - 1].removeAttribute("disabled");
-	// Enable the button on the right if exists
-	if (j < buttons[i].length - 1) buttons[i][j + 1].removeAttribute("disabled");
-	// Enable the button on the top-left if exists
-	if (i > 0 && j > 0) buttons[i - 1][j - 1].removeAttribute("disabled");
-	// Enable the button on the top-right if exists
-	if (i > 0 && j < buttons[i].length - 1)
-		buttons[i - 1][j + 1].removeAttribute("disabled");
-	// Enable the button on the bottom-left if exists
-	if (i < buttons.length - 1 && j > 0)
-		buttons[i + 1][j - 1].removeAttribute("disabled");
-	// Enable the button on the bottom-right if exists
-	if (i < buttons.length - 1 && j < buttons[i].length - 1)
-		buttons[i + 1][j + 1].removeAttribute("disabled");
-}
-
-/**
- * @param {string} id
- * @param {"up"|"down"} state
- */
-function sendData(id, state) {
-	const data = dataTemplate(id, state);
-	console.log(data);
-	ws.send(JSON.stringify(data));
-}

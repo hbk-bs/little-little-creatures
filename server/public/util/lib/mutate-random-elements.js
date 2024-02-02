@@ -1,18 +1,3 @@
-//room-utils.js
-/**
- *
- * @param {HTMLButtonElement} buttonElement
- * @param {string} attributeName
- * @returns
- */
-const hasAttribute = (buttonElement, attributeName) => {
-	return buttonElement.hasAttribute(attributeName);
-};
-
-export function getKeyByValue(object, value) {
-	return Object.keys(object).find((key) => object[key] === value);
-}
-
 /**
  *
  * @param {{
@@ -28,6 +13,15 @@ export function mutateRandomElements({
 	modifierFunction,
 	attributeToCheck,
 }) {
+	/**
+	 *
+	 * @param {HTMLButtonElement} buttonElement
+	 * @param {string} attributeName
+	 * @returns
+	 */
+	const hasAttribute = (buttonElement, attributeName) => {
+		return buttonElement.hasAttribute(attributeName);
+	};
 	// Check if the element has a specific attribute
 	// Flatten the 2D array while keeping track of original indices and filtering out elements with the attribute set
 	// Define the type for our result
@@ -44,7 +38,7 @@ export function mutateRandomElements({
 
 		// Filter out elements in the row that have the attribute set
 		let filteredRow = row.filter(
-			(element) => !hasAttribute(element, attributeToCheck)
+			(element) => !hasAttribute(element, attributeToCheck),
 		);
 
 		// Map the filtered elements to an object containing the element and its original position
@@ -63,7 +57,7 @@ export function mutateRandomElements({
 	}
 	if (eligibleCount < numberOfElements) {
 		throw new Error(
-			`Not enough elements are eligible for selection. eligibleCount: ${eligibleCount}, numberOfElements: ${numberOfElements}`
+			`Not enough elements are eligible for selection. eligibleCount: ${eligibleCount}, numberOfElements: ${numberOfElements}`,
 		);
 	}
 	// Shuffle and select a random subset of eligible elements
