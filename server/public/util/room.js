@@ -1,23 +1,9 @@
-/// <reference path="../../node_modules/@types/p5/lib/addons/p5.sound.d.ts" />
-/// <reference path="../../node_modules/@types/p5/global.d.ts" />
-/// <reference path="../../node_modules/@types/p5/literals.d.ts" />
-/// <reference path="../../node_modules/@types/p5/constants.d.ts" />
-/// <reference path="../../node_modules/@types/p5/index.d.ts" />
+import { enableAdjacentButtons } from "./lib/enable-adjacent-buttons.js";
+import { mutateRandomElements } from "./lib/mutate-random-elements.js";
+import { sendData } from "./lib/send-data.js";
+import { getKeyByValue } from "./lib/util.js";
 
-// Keep these comments alive.
-// They will help you while writing code.
-
-const DEBUG = true;
-let serverUrl = "";
-let scheme = "ws";
-const { location: loc } = document;
-
-if (loc.protocol === "https:") {
-	scheme += "s";
-}
-serverUrl = `${scheme}://${loc.hostname}:${loc.port}`;
-
-const ws = new WebSocket(`${serverUrl}/ws/little-creatures`);
+const attributeName = "data-type";
 
 const ButtonTypes = {
 	start: 0,
@@ -28,132 +14,117 @@ const ButtonTypes = {
 	empty: 5,
 };
 
+let serverUrl = "";
+let scheme = "ws";
+const { location: loc } = document;
+let params = new URLSearchParams(document.location.search);
+const channel = params.get("channel") ?? "little-creatures";
+
+if (loc.protocol === "https:") {
+	scheme += "s";
+}
+serverUrl = `${scheme}://${loc.hostname}:${loc.port}`;
+
+const ws = new WebSocket(`${serverUrl}/ws/${channel}`);
+
+const buttonsInX = 7;
+const buttonsInY = 9;
+let w = 50;
+let h = 50;
+
 /**
- * @type {Element[]}
+ * @type {HTMLButtonElement[][]}
  */
 const buttons = [];
-
-function setup() {
-	// createCanvas(500, 500);
-	noCanvas();
-	const buttonsInX = 7;
-	const buttonsInY = 9;
-	let w = 50;
-	let h = 50;
-	let x = 0;
-	for (let i = 0; i < buttonsInX; i++) {
-		let y = 0;
-		for (let j = 0; j < buttonsInY; j++) {
-			// const b = new Button(x, y, w, h, ButtonTypes.empty);
-			const name = `${i * buttonsInX + j}`;
-			const b = createButton(`Button ${name}`);
-			b.attribute("id", name);
-			b.attribute("data-type", `${ButtonTypes.empty}`);
-			// b.position(x, y);
-			b.size(w, h);
-			b.addClass(`${ButtonTypes.empty}`);
-			b.parent("sketch");
-			// @ts-ignore
-			buttons.push(b);
-			y = y + h;
-		}
-		x = x + w;
-	}
-
-	buttons[9].attribute("data-type", `${ButtonTypes.start}`);
-	buttons[15].attribute("data-type", `${ButtonTypes.win}`);
-	buttons[16].attribute("data-type", `${ButtonTypes.lose}`);
-	buttons[17].attribute("data-type", `${ButtonTypes.creak}`);
-	buttons[10].attribute("data-type", `${ButtonTypes.creak}`);
-
-	buttons[18].attribute("data-type", `${ButtonTypes.snorring}`);
-
-	// // @ts-ignore
-	const down = (e) => {
-		if (e.target) {
-			console.log(e.target.attributes["data-type"].value);
-			sendData(e.target.attributes["data-type"].value, "down");
-		}
-	};
-
-	if (DEBUG) {
-		const legendBuilder = (col, name) =>
-			`<span style="display: inline-block;color: ${col};width=10px;height=10px; border-radius:50%">■</span> lightgray is ${name}<br>`;
-		let html = "";
-		html += legendBuilder("lightgray", "empty");
-		html += legendBuilder("lime", "win");
-		html += legendBuilder("yellow", "creak");
-		html += legendBuilder("orange", "snorring");
-		html += legendBuilder("red", "lose");
-		html += legendBuilder("green", "start");
-		buttons.forEach((button) => {
-			//@ts-ignore
-			console.log(button.innerHTML);
-			if (button.attribute("data-type") === `${ButtonTypes.empty}`) {
-				button.style("background-color", "lightgray");
-			}
-			if (button.attribute("data-type") === `${ButtonTypes.win}`) {
-				button.style("background-color", "lime");
-			}
-			if (button.attribute("data-type") === `${ButtonTypes.creak}`) {
-				button.style("background-color", "yellow");
-			}
-			if (button.attribute("data-type") === `${ButtonTypes.snorring}`) {
-				button.style("background-color", "orange");
-			}
-			if (button.attribute("data-type") === `${ButtonTypes.lose}`) {
-				button.style("background-color", "red");
-			}
-			if (button.attribute("data-type") === `${ButtonTypes.start}`) {
-				button.style("background-color", "green");
-			}
-		});
-
-		const legend = createElement("div");
-		legend.html(html);
-		// legend.parent("body");
-		// legend.html(`hello world`);
-	}
-	// // @ts-ignore
-	const up = (e) => {
-		// sendData(e.target.id, "up");
-	};
-	buttons.forEach((button) => {
-		//@ts-ignore
-		button.mousePressed(down);
-		//@ts-ignore
-		button.mouseReleased(up);
-	});
+const sketch = document.getElementById("sketch");
+if (!sketch) {
+	throw new Error("sketch is null");
 }
+for (let i = 0; i < buttonsInY; i++) {
+	buttons[i] = [];
+
+	for (let j = 0; j < buttonsInX; j++) {
+		const btnId = `btn-${i}-${j}`;
+		const button = document.createElement("button");
+		button.id = btnId;
+		button.style.width = `${w}px`;
+		button.style.height = `${h}px`;
+		button.disabled = true;
+		sketch.appendChild(button);
+		buttons[i][j] = button;
+	}
+}
+
+buttons[0][0].setAttribute(attributeName, `${ButtonTypes.start}`);
+buttons[0][0].innerText = "Start";
+buttons[0][0].disabled = false;
+buttons[8][6].setAttribute(attributeName, `${ButtonTypes.win}`);
+buttons[8][6].innerText = "Win";
+
+mutateRandomElements({
+	array2d: buttons,
+	numberOfElements: 5,
+	modifierFunction: (buttonElement) => {
+		buttonElement.setAttribute(attributeName, `${ButtonTypes.creak}`);
+	},
+	attributeToCheck: attributeName,
+});
+
+mutateRandomElements({
+	array2d: buttons,
+	numberOfElements: 7,
+	modifierFunction: (buttonElement) => {
+		buttonElement.setAttribute(attributeName, `${ButtonTypes.snorring}`);
+	},
+	attributeToCheck: attributeName,
+});
+
+mutateRandomElements({
+	array2d: buttons,
+	numberOfElements: 5,
+	modifierFunction: (buttonElement) => {
+		buttonElement.setAttribute(attributeName, `${ButtonTypes.lose}`);
+	},
+	attributeToCheck: attributeName,
+});
+
 /**
- * @param {string} id
- * @param {"up"|"down"} state
+ * Arrow function for handling a mouse down event.
+ * @param {MouseEvent} e - The mouse event.
+ * @param {"up"|"down"} type
  */
-function dataTemplate(id, state) {
-	const calculatedMeasurements = [0, 0, 0, 0, 0].map((_e, i) => {
-		if (i === parseInt(id)) {
-			return state === "down" ? 1 : 0;
+const mouseHandler = (e, type) => {
+	if (!e) return;
+
+	if (e.target) {
+		/** @type {Element} */
+		const element = e.target;
+		if (element.hasAttribute(attributeName)) {
+			console.log(
+				type,
+				getKeyByValue(
+					ButtonTypes,
+					parseInt(element.attributes[attributeName].value),
+				),
+			);
+
+			sendData(ws, element.attributes[attributeName].value, type, channel);
 		} else {
-			return 0;
+			console.log("no attribute");
 		}
+	}
+};
+
+buttons.forEach((row, i) => {
+	row.forEach((button, j) => {
+		button.addEventListener("mousedown", (e) => {
+			mouseHandler(e, "down");
+			// button.removeAttribute("disabled");
+		});
+		button.addEventListener("mouseup", (e) => {
+			mouseHandler(e, "up");
+			button.removeAttribute("disabled");
+			enableAdjacentButtons(buttons, i, j);
+		});
 	});
-	const template = {
-		channel: "little-creatures",
-		measurements: calculatedMeasurements,
-	};
-	return template;
-}
-
-/**
- * @param {string} id
- * @param {"up"|"down"} state
- */
-function sendData(id, state) {
-	const data = dataTemplate(id, state);
-	console.log(data);
-	ws.send(JSON.stringify(data));
-}
-
-function draw() {
-	// background(128);
-}
+});
