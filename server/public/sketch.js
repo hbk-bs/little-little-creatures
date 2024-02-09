@@ -2,7 +2,6 @@
 let Fullscreen = false;
 
 //AUDIO
-let soundAufwachen;
 let soundKnarren;
 
 //VIDEO
@@ -11,19 +10,18 @@ let videoStart;
 //sich bewegendes Monster
 let videoSchnarchen;
 //Wütendes Monster (Verloren)
-let videoCow;
+let videoAufwachen;
 //Sandwich (Gewonnen)
 let videoSandwich;
 
 let currentVideo;
 
 function preload() {
-    soundAufwachen = loadSound('assets/monster_roar.mp3');
     soundKnarren = loadSound('assets/knarren.mp3');
     //VIDEO
     videoStart = createVideo('assets/start.mp4');
     videoSchnarchen = createVideo('assets/schnarchen.mp4');
-    videoCow = createVideo('assets/cow.mp4');
+    videoAufwachen = createVideo('assets/aufwachen.mp4');
     videoSandwich = createVideo('assets/sandwich.mp4');
 
 }
@@ -76,7 +74,7 @@ function setup() {
     currentVideo = videoStart;
     videoStart.hide();
     videoSchnarchen.hide();
-    videoCow.hide();
+    videoAufwachen.hide();
     videoSandwich.hide();
 }
 
@@ -90,7 +88,7 @@ function draw() {
 function start() {
     videoSandwich.stop();
     videoSchnarchen.stop();
-    videoCow.stop();
+    videoAufwachen.stop();
     currentVideo = videoStart;
     currentVideo.loop();
 }
@@ -110,15 +108,16 @@ function schnarchen() {
 //Wütendes Monster (Verloren)
 function aufwachen() {
     videoStart.stop();
-    soundAufwachen.play();
-    //VIDEO
-    currentVideo = videoCow;
-    currentVideo.volume(0);
+    videoSchnarchen.stop();
+    videoAufwachen.stop();
+    currentVideo = videoAufwachen;
     currentVideo.play();
 }
 
 function gewonnen() {
     videoStart.stop();
+    videoSchnarchen.stop();
+    videoAufwachen.stop();
     currentVideo = videoSandwich;
     currentVideo.play();
 }
